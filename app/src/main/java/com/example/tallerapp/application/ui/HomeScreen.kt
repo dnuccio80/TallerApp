@@ -7,27 +7,24 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.List
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material3.BottomAppBar
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -35,9 +32,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.tallerapp.ui.theme.BackgroundColor
 import com.example.tallerapp.ui.theme.ButtonColor
 import com.example.tallerapp.ui.theme.CardBackgroundColor
@@ -46,66 +46,66 @@ import com.example.tallerapp.ui.theme.SecondaryTextColor
 import com.example.tallerapp.ui.theme.TextColor
 
 @Composable
-fun IndexScreen() {
-    Scaffold(
+fun HomeScreen() {
+    Box(
         Modifier
-            .fillMaxSize(),
-        bottomBar = { BottomAppBarItem() }
-    ) { paddingValues ->
-        Box(
-            Modifier
-                .fillMaxSize()
-                .background(
-                    brush = Brush.linearGradient(
-                        colors = listOf(
-                            BackgroundColor,
-                            SecondBackgroundColor
-                        )
+            .fillMaxSize()
+            .background(
+                brush = Brush.linearGradient(
+                    colors = listOf(
+                        BackgroundColor,
+                        SecondBackgroundColor
                     )
                 )
+            )
+    ) {
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .padding(vertical = 52.dp, horizontal = 16.dp)
         ) {
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 52.dp, horizontal = 16.dp)
-            ) {
-                BalanceCardItem()
-                Spacer(Modifier.size(16.dp))
-                WorkDoneCardItem()
-                Spacer(Modifier.size(16.dp))
-                PaymentReceivedCardItem()
-            }
+            BalanceCardItem()
+            Spacer(Modifier.size(16.dp))
+            WorkDoneCardItem()
+            Spacer(Modifier.size(16.dp))
+            PaymentReceivedCardItem()
         }
-
+        HomeFabItem(Modifier.align(Alignment.BottomEnd))
     }
 }
 
 @Composable
-fun BottomAppBarItem() {
+fun HomeFabItem(modifier: Modifier) {
 
-    var indexSelected by rememberSaveable { mutableIntStateOf(0) }
+    var expandedValue by rememberSaveable { mutableStateOf(false) }
 
-    NavigationBar(
-        Modifier.fillMaxWidth(),
-        containerColor = CardBackgroundColor,
-        tonalElevation = 16.dp,
+    FloatingActionButton(
+        onClick = { expandedValue = true },
+        modifier = modifier.padding(vertical = 128.dp, horizontal = 16.dp),
     ) {
-        NavigationBarItem(
-            selected = indexSelected == 0,
-            onClick = { indexSelected = 0},
-            icon = { Icon(Icons.Filled.Home, contentDescription = "Home button") },
-            label = { Text("Home") }
-
-        )
-        NavigationBarItem(
-            selected = indexSelected == 1,
-            onClick = { indexSelected = 1},
-            icon = { Icon(Icons.AutoMirrored.Filled.List, contentDescription = "work list button") },
-            label = { Text("Work List") }
-        )
+        Icon(Icons.Filled.Add, contentDescription = "add button")
+        DropdownMenuHome(expandedValue) { expandedValue = false }
     }
 }
 
+@Composable
+fun DropdownMenuHome(expandedValue: Boolean, onDismiss: () -> Unit) {
+    DropdownMenu(
+        expanded = expandedValue,
+        onDismissRequest = { onDismiss() },
+        offset = DpOffset((-32).dp, (-2).dp),
+        modifier = Modifier.background(ButtonColor)
+    ) {
+        DropdownMenuItem(
+            text = { Text("Add work done", color = Color.White) },
+            onClick = {}
+        )
+        DropdownMenuItem(
+            text = { Text("Add payment received", color = Color.White) },
+            onClick = {}
+        )
+    }
+}
 
 @Composable
 fun BalanceCardItem() {
