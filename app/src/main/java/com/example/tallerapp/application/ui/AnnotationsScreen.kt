@@ -1,6 +1,7 @@
 package com.example.tallerapp.application.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -25,12 +25,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import com.example.tallerapp.application.ui.models.Routes
 import com.example.tallerapp.ui.theme.BackgroundColor
 import com.example.tallerapp.ui.theme.CardBackgroundColor
 import com.example.tallerapp.ui.theme.SecondBackgroundColor
 
 @Composable
-fun AnnotationsScreen(innerPadding: PaddingValues) {
+fun AnnotationsScreen(innerPadding: PaddingValues, navigationController: NavHostController) {
     Box(
         Modifier
             .fillMaxSize()
@@ -50,24 +52,28 @@ fun AnnotationsScreen(innerPadding: PaddingValues) {
 
         ) {
             items(20) {
-                NoteItem()
+                NoteItem() { navigationController.navigate(Routes.AnnotationSheetScreen.route) }
             }
         }
     }
 }
 
 @Composable
-fun NoteItem() {
+fun NoteItem(onNoteClick: () -> Unit) {
     Card(
         Modifier
-            .fillMaxWidth().padding(vertical = 4.dp),
+            .fillMaxWidth()
+            .padding(vertical = 4.dp)
+            .clickable {
+                onNoteClick()
+            },
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = CardBackgroundColor
         ),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 8.dp
-        )
+        ),
     ) {
         Column(Modifier.fillMaxWidth().padding(16.dp)) {
             Text("Title Example", fontWeight = FontWeight.ExtraBold, fontSize = 16.sp)
